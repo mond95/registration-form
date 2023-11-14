@@ -1,0 +1,172 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+/* CREATING CSS CUSTOM PROPERTIES  */
+/* These are basically variables in css */
+
+/* We need to define a scope so we do :root meaning the root scope */
+/* NOTES: */
+/* The :root selector allows you to target the highest-level “parent” element in the DOM, or document tree. */
+/* The :root selector matches the document's root element. In HTML, the root element is always the <html> element. */
+/* The CSS :root pseudo-class selector is used to select the highest-level parent of a given specification. 
+In the HTML specification, the :root is essentially equivalent to the html selector. */
+
+:root {
+  /* we create/assign variables using '--'  */
+  --success-color: #2ecc71;
+  --error-color: #e74c3c;
+}
+
+/* adding border-box as don't want any padding to affect the width of the element */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f9fafb;
+  /* also copied from google fonts: */
+  font-family: "Open Sans", sans-serif;
+  /* setting the display property to flex which will make everything that's a direct child of the body into a flex item */
+  /* in this case, we only have 1 direct child which is the div of container */
+  /* reason we're doing display flex is so we can easily put this content right in the middle both vertically
+    and horizontally which we can do with align-items and justify-content */
+  display: flex;
+  /* centering it vertically */
+  align-items: center;
+  /* centering it horizontally */
+  justify-content: center;
+  /* at the moment it's at the top of the screen and centered horizontally only. If we want it centered vertically aswell 
+  we also need to add a height - vh is a viewport height unit so basically with a viewport height
+  you can think of the browser having 100 slices going horizontally and we've just set the height to all 100 so it
+  takes up the whole thing!! */
+  /* if e.g. we set it to 50vh then it's only going to take up 50 of those slices */
+  min-height: 100vh;
+  /* taking any margin away */
+  margin: 0;
+}
+
+/* the container wraps around everything */
+.container {
+  background-color: #fff;
+  /* round the corners with border radius */
+  border-radius: 5px;
+  /* setting a shadow around the border */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  /* setting width of the container */
+  width: 400px;
+}
+
+/* that's it for the container - the padding we will actually put on the form itself */
+.form {
+  /* 30px top and bottom 40px left and right */
+  padding: 30px 40px;
+}
+
+h2 {
+  text-align: center;
+  margin: 0 0 20px;
+}
+
+.form-control {
+  /* gives some space between each form control */
+  margin-bottom: 10px;
+  padding-bottom: 20px;
+  /* want to position this relative because we're going to be positioning the small tag, the error message
+    absolute within the form control. So if you want to position something absolute within another element, the 
+    parent element has to be set to relative!  */
+  position: relative;
+}
+
+.form-control label {
+  /* changing colour of the label text to grey */
+  color: #777;
+  /* labels are displayed inline by default so going to display ir as a block so they go on their own line and knock the next element down */
+  display: block;
+  /* adding space between the label and the input box */
+  margin-bottom: 5px;
+}
+
+.form-control input {
+  /* lightening up the border line of the input box */
+  border: 2px solid #f0f0f0;
+  /* rounding the box's corners */
+  border-radius: 4px;
+  /* setting display to block so it's on its own line */
+  display: block;
+  /* setting the width to be 100% of its container so it stretches all the way across */
+  width: 100%;
+  /* adding padding to the input boxes so there is more space around the text and so the input box is a bit bigger */
+  padding: 10px;
+  font-size: 14px;
+}
+
+/* Now we want to get rid of the orange coloured outline on the input box that happens when you click on it */
+/* This happens when the element is in the focus state. More on this: */
+/* A CSS pseudo-class is a keyword added to a selector that specifies a special state of the selected element(s). 
+For example, the pseudo-class :hover can be used to select a button when a user's pointer hovers over the button and this selected button can then be styled. */
+/* The :focus CSS pseudo-class represents an element (such as a form input) that has received focus. 
+It is generally triggered when the user clicks or taps on an element or selects it with the keyboard's Tab key. */
+/* Any element (most commonly <input>s and <textarea>s) are in “focus” when they are selected and ready to enter text (like when a cursor is blinking) */
+
+.form-control input:focus {
+  outline: 0;
+  /* note: Outline is a line outside of the element's border. Unlike other areas of the box, 
+    outlines don't take up space, so they don't affect the layout of the document in any way.
+    Note: Outline differs from borders! Unlike border, the outline is drawn outside the element's border, and may overlap other content. Also, the outline is NOT a part of the element's dimensions; 
+    the element's total width and height is not affected by the width of the outline. */
+  /* Border is created inside the element, where as outline is created outside the element. 
+So border is computed along with the width and height of the element, while outline draws outside the element. */
+
+  /* still want it to have some kind of colour when you click on them - now will have this darker grey colour when click
+on them */
+  border-color: #777;
+}
+
+/* we are going to have diff states for the inputs e.g. if there's an error, we want the border to be red. If it's successful, 
+i want it to be green */
+/* so targeting form control and if it has a class of success - i.e. if the form control div also has a class of success then we want
+the input to have a border color of green  */
+.form-control.success input {
+  /* can use the custom variables used at the top of the style sheet, using the keyword 'var' */
+  border-color: var(--success-color);
+}
+
+/* if there's an error, we want the input to have a border colour of red */
+.form-control.error input {
+  border-color: var(--error-color);
+}
+/* note the above classes don't exist yet - we also can't just add them as classes to the html manually or they will always just
+show as red/green - we will be adding them to javascript later so they happen dynamically */
+
+.form-control small {
+  color: var(--error-color);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  /* initially we want these to be hidden because we don't want to show error messages for no reason, need to wait until an error
+  actually happens so will set visibility to hidden */
+  visibility: hidden;
+  display: none;
+  /* there is a difference between visibility: hidden and display: none -- display:none will collapse anything around it, whereas
+  visibility:hidden simply just makes it invisible which is what we want to do here */
+}
+
+/* then later in the javascript when there's an error, we will add the error class and set the visibility of the error message
+ (the small tag) back to visible */
+.form-control.error small {
+  visibility: visibile;
+}
+
+.form button {
+  /* the cursor will have a pointer when you hover over the button */
+  cursor: pointer;
+  background-color: #3498db;
+  border: 2px solid #3498db;
+  border-radius: 4px;
+  color: #fff;
+  display: block;
+  font-size: 16px;
+  padding: 10px;
+  margin-top: 20px;
+  /* so the button goes all the way across, making width 100% */
+  width: 100%;
+}
